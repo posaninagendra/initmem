@@ -63,6 +63,7 @@ namespace{
 		virtual find_uninitialised_pass *clone() override {
 			return this;
 		}
+		/* Insert variables tree nodes of type VAR_DECL in the set */
 		static void insert_vars(std::set<tree>& lhs, tree t){
 			if (t == NULL){
 				return ;
@@ -72,6 +73,7 @@ namespace{
 				lhs.insert(t);
 			}
 		}
+		/* Erase a tree-node form the set, if it is initialized */
 		static void erase_if_initialised_lhs(std::set<tree>& lhs, tree t){
 			if (t == NULL)
 				return;
@@ -86,28 +88,31 @@ namespace{
 				break;
 			}
 		}
-		
+		/* Function to traverse the statements to gather uninitialised variables */
 		void gather_uninitialised_vars(function *fun){
 			std::set<tree> lhs;
 			std::cerr << "1";
 			basic_block bb;
+			/* For each basic block traverse the statements */
 			FOR_ALL_BB_FN(bb, fun){
 				gimple_stmt_iterator gsi;
 				for (gsi = gsi_start_bb(bb); !gsi_end_p(gsi); gsi_next(&gsi)){
 					gimple stmt = gsi_stmt(gsi);
 					switch(gimple_code(stmt)){
+						/* For each GIMPLE_BIND, find vars and find initialization */
 						case GIMPLE_BIND:
 						{
 							std::cerr << "in bind";
 							gbind *gb_stmt = as_a <gbind *> (gsi_stmt(gsi));
 							tree vars = gimple_bind_vars(gb_stmt);
 						  	insert_vars(lhs, vars);
-
+							/* Get the GIMPLE_BIND body and traverse the gimple sequence to find initialization statements */
 							gimple_seq bind_body = gimple_bind_body(gb_stmt);
 							gimple_stmt_iterator gsi_bind;
 							for (gsi_bind = gsi_start(bind_body); !gsi_end_p(gsi_bind); gsi_next(&gsi_bind)){
 								gimple stmt_bind = gsi_stmt(gsi_bind);
 								switch(gimple_code(stmt_bind)){
+									/* If found initialization statement, check the lhs of the stmt and erase the node from the set */
 									case GIMPLE_ASSIGN:
 									{
 										tree nouse_lhs = gimple_assign_lhs(stmt_bind);
