@@ -1,0 +1,54 @@
+digraph cfg {
+subgraph fun_0x2b07e77b91f8 {
+bb_0x2b07e77b91f8_0[label="ENTRY: void test(int)
+test.cc:6"];
+bb_0x2b07e77b91f8_0 -> bb_0x2b07e77b91f8_2;
+bb_0x2b07e77b91f8_2[label="i = 0;
+"];
+bb_0x2b07e77b91f8_2 -> bb_0x2b07e77b91f8_3;
+bb_0x2b07e77b91f8_3[label="if (i >= n)
+"];
+bb_0x2b07e77b91f8_3 -> bb_0x2b07e77b91f8_13;
+bb_0x2b07e77b91f8_3 -> bb_0x2b07e77b91f8_4;
+bb_0x2b07e77b91f8_4[label="D.2340 = i % 3;
+div_3 = D.2340 == 0;
+D.2341 = i % 5;
+div_5 = D.2341 == 0;
+if (div_3 != 0)
+"];
+bb_0x2b07e77b91f8_4 -> bb_0x2b07e77b91f8_5;
+bb_0x2b07e77b91f8_4 -> bb_0x2b07e77b91f8_7;
+bb_0x2b07e77b91f8_5[label="if (div_5 != 0)
+"];
+bb_0x2b07e77b91f8_5 -> bb_0x2b07e77b91f8_6;
+bb_0x2b07e77b91f8_5 -> bb_0x2b07e77b91f8_7;
+bb_0x2b07e77b91f8_6[label="fizzbuzz ();
+"];
+bb_0x2b07e77b91f8_6 -> bb_0x2b07e77b91f8_12;
+bb_0x2b07e77b91f8_7[label="if (div_3 != 0)
+"];
+bb_0x2b07e77b91f8_7 -> bb_0x2b07e77b91f8_8;
+bb_0x2b07e77b91f8_7 -> bb_0x2b07e77b91f8_9;
+bb_0x2b07e77b91f8_8[label="fizz ();
+"];
+bb_0x2b07e77b91f8_8 -> bb_0x2b07e77b91f8_12;
+bb_0x2b07e77b91f8_9[label="if (div_5 != 0)
+"];
+bb_0x2b07e77b91f8_9 -> bb_0x2b07e77b91f8_10;
+bb_0x2b07e77b91f8_9 -> bb_0x2b07e77b91f8_11;
+bb_0x2b07e77b91f8_10[label="buzz ();
+"];
+bb_0x2b07e77b91f8_10 -> bb_0x2b07e77b91f8_12;
+bb_0x2b07e77b91f8_11[label="print_number (i);
+"];
+bb_0x2b07e77b91f8_11 -> bb_0x2b07e77b91f8_12;
+bb_0x2b07e77b91f8_12[label="n = n + 1;
+"];
+bb_0x2b07e77b91f8_12 -> bb_0x2b07e77b91f8_3;
+bb_0x2b07e77b91f8_13[label="return;
+"];
+bb_0x2b07e77b91f8_13 -> bb_0x2b07e77b91f8_1;
+bb_0x2b07e77b91f8_1[label=" EXIT: void test(int)
+test.cc:19"];
+}
+}
