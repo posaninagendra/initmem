@@ -34,7 +34,6 @@
 
 int plugin_is_GPL_compatible;
 
-//Global variable
 std::set<tree> lhs;
 static struct plugin_info find_uninitialised_plugin_info = {"1.0", "This plugin initialises uninitialised variables of a given C++ program"};
 
