@@ -1,0 +1,125 @@
+Plugin info: 
+==================
+Base name: find_uninitialised
+Full name: ./find_uninitialised.so
+Number of arguments of this plugin: 0
+
+Version info
+============
+
+Base version: 5.2.0
+Date stamp: 20150716
+Dev phase: 
+Revision: 
+Configuration arguments: ../gcc-5.2.0/configure --prefix=/home/nagendra/gcc-install --enable-languages=c,c++
+
+
+Plugin successfully initialised
+stmt = 11
+{
+  int D.21740;
+
+  {
+    int a;
+    int b;
+    int c;
+    int d;
+    int e;
+    int k;
+
+    a = 10;
+    c = 0;
+    k = foo ();
+    D.21740 = 0;
+    return D.21740;
+  }
+  D.21740 = 0;
+  return D.21740;
+}
+
+--in bind--
+{
+  int a;
+  int b;
+  int c;
+  int d;
+  int e;
+  int k;
+
+  a = 10;
+  c = 0;
+  k = foo ();
+  D.21740 = 0;
+  return D.21740;
+}
+D.21740 = 0;
+
+--in assign--
+0
+--erase--
+  int D.21740;
+--erase--
+return D.21740;
+stmt = 11
+{
+  int D.21742;
+  int x;
+  int y;
+
+  x = 0;
+  D.21742 = x;
+  return D.21742;
+}
+
+--in bind--
+x = 0;
+
+--in assign--
+0
+--erase--
+  int x;
+--erase--
+D.21742 = x;
+
+--in assign--
+0
+--erase--
+  int D.21742;
+--erase--
+return D.21742;
+stmt = 11
+{
+  if (__initialize_p == 1) goto <D.21744>; else goto <D.21745>;
+  <D.21744>:
+  if (__priority == 65535) goto <D.21746>; else goto <D.21747>;
+  <D.21746>:
+  std::ios_base::Init::Init (&__ioinit);
+  __cxa_atexit (__comp_dtor , &__ioinit, &__dso_handle);
+  goto <D.21748>;
+  <D.21747>:
+  <D.21748>:
+  goto <D.21749>;
+  <D.21745>:
+  <D.21749>:
+}
+
+--in bind--
+if (__initialize_p == 1) goto <D.21744>; else goto <D.21745>;
+<D.21744>:
+if (__priority == 65535) goto <D.21746>; else goto <D.21747>;
+<D.21746>:
+std::ios_base::Init::Init (&__ioinit);
+__cxa_atexit (__comp_dtor , &__ioinit, &__dso_handle);
+goto <D.21748>;
+<D.21747>:
+<D.21748>:
+goto <D.21749>;
+<D.21745>:
+<D.21749>:
+stmt = 11
+{
+  __static_initialization_and_destruction_0 (1, 65535);
+}
+
+--in bind--
+__static_initialization_and_destruction_0 (1, 65535);

@@ -34,6 +34,8 @@
 
 int plugin_is_GPL_compatible;
 
+//Global variable
+std::set<tree> lhs;
 static struct plugin_info find_uninitialised_plugin_info = {"1.0", "This plugin initialises uninitialised variables of a given C++ program"};
 
 namespace{
@@ -63,76 +65,97 @@ namespace{
 		virtual find_uninitialised_pass *clone() override {
 			return this;
 		}
-		/* Insert variables tree nodes of type VAR_DECL in the set */
-		static void insert_vars(std::set<tree>& lhs, tree t){
+		/* Insert tree nodes of type VAR_DECL in the set */
+		static void insert_vars(std::set<tree>& var_set, tree t){
 			if (t == NULL){
 				return ;
 			}
 
-			if ( TREE_CODE(t) == VAR_DECL){
-				lhs.insert(t);
+			if ( TREE_CODE(t) == VAR_DECL && !DECL_ARTIFICIAL(t)){
+				var_set.insert(t);
+				std::cerr << "\n--insert--\n";
+				print_generic_decl(stderr, t, 0);
+				std::cerr << "\n--insert--\n";
 			}
 		}
 		/* Erase a tree-node form the set, if it is initialized */
-		static void erase_if_initialised_lhs(std::set<tree>& lhs, tree t){
+		static void erase_if_initialised_lhs(std::set<tree>& var_set, tree t){
 			if (t == NULL)
 				return;
 			switch(TREE_CODE(t)){
 				case VAR_DECL:
-				{
-					lhs.erase(t);
-					print_generic_decl(stderr, t, 0);
-					break;
-				}
+					{
+						std::cerr << var_set.erase(t);
+						std::cerr << "\n--erase--\n";
+						print_generic_decl(stderr, t, 0);
+						std::cerr << "\n--erase--\n";
+						break;
+					}
 				default:
-				break;
+					break;
 			}
 		}
-		/* Function to traverse the statements to gather uninitialised variables */
-		void gather_uninitialised_vars(function *fun){
-			std::set<tree> lhs;
-			std::cerr << "1";
-			basic_block bb;
-			/* For each basic block traverse the statements */
-			FOR_ALL_BB_FN(bb, fun){
-				gimple_stmt_iterator gsi;
-				for (gsi = gsi_start_bb(bb); !gsi_end_p(gsi); gsi_next(&gsi)){
-					gimple stmt = gsi_stmt(gsi);
-					switch(gimple_code(stmt)){
-						/* For each GIMPLE_BIND, find vars and find initialization */
-						case GIMPLE_BIND:
-						{
-							std::cerr << "in bind";
-							gbind *gb_stmt = as_a <gbind *> (gsi_stmt(gsi));
-							tree vars = gimple_bind_vars(gb_stmt);
-						  	insert_vars(lhs, vars);
-							/* Get the GIMPLE_BIND body and traverse the gimple sequence to find initialization statements */
-							gimple_seq bind_body = gimple_bind_body(gb_stmt);
-							gimple_stmt_iterator gsi_bind;
-							for (gsi_bind = gsi_start(bind_body); !gsi_end_p(gsi_bind); gsi_next(&gsi_bind)){
-								gimple stmt_bind = gsi_stmt(gsi_bind);
-								switch(gimple_code(stmt_bind)){
-									/* If found initialization statement, check the lhs of the stmt and erase the node from the set */
-									case GIMPLE_ASSIGN:
-									{
-										tree nouse_lhs = gimple_assign_lhs(stmt_bind);
-										erase_if_initialised_lhs(lhs, nouse_lhs);
-										break;
-									}
-									default:
-										break;
-								}
-							}
-							break;
-						}
+		static tree bind_callback_stmt(gimple_stmt_iterator *gsi, bool *handled_all_ops, struct walk_stmt_info *wi){
+			*handled_all_ops = true;
+			gimple stmt_bind = gsi_stmt(*gsi);
+			print_gimple_stmt(stderr, stmt_bind, 0, 0);
+			switch(gimple_code(stmt_bind)){
+				/* If found initialization statement, check the lhs of the stmt and erase the node from the set */
+				case GIMPLE_ASSIGN:
+					{
+						std::cerr << "\n--in assign--\n";
+						tree nouse_lhs = gimple_assign_lhs(stmt_bind);
+						erase_if_initialised_lhs(lhs, nouse_lhs);
 						break;
-						default:
-							break;
 					}
-				}
+				default:
+					break;
 			}
+			return nullptr;
 
 		}
+
+		static tree vars_callback_stmt(gimple_stmt_iterator *gsi, bool *handled_all_ops, struct walk_stmt_info *wi){
+			*handled_all_ops = true;
+
+			//std::set<tree> lhs;
+			gimple stmt = gsi_stmt(*gsi);
+			std::cerr << "stmt = " << gimple_code(stmt) << "\n";
+			print_gimple_stmt(stderr, stmt, 0, 0);
+
+			switch(gimple_code(stmt)){
+				/* For each GIMPLE_BIND, find vars and find initialization */
+				case GIMPLE_BIND:
+					{
+						std::cerr << "\n--in bind--\n";
+						gbind *gb_stmt = as_a <gbind *> (stmt);
+						tree vars = gimple_bind_vars(gb_stmt);
+						//print_generic_decl(stderr, vars, 0);
+						insert_vars(lhs, vars);
+						/* Get the GIMPLE_BIND body and traverse the gimple sequence to find initialization statements */
+						gimple_seq bind_body = gimple_bind_body(gb_stmt);
+						struct walk_stmt_info wi;
+						memset(&wi, 0, sizeof(wi));
+						walk_gimple_seq(bind_body, bind_callback_stmt, nullptr, &wi);
+
+					}
+					break;
+				default:
+					break;
+
+			}
+			return nullptr;
+		}
+
+		void gather_uninitialised_vars(function *fun){
+			gimple_seq gseq = fun->gimple_body;
+			struct walk_stmt_info wi;
+			memset(&wi, 0, sizeof(wi));
+
+			walk_gimple_seq(gseq, vars_callback_stmt, nullptr, &wi);
+		}
+
+
 	};
 
 
@@ -180,12 +203,11 @@ int plugin_init(struct plugin_name_args *plugin_info, struct plugin_gcc_version 
 	struct register_pass_info pass_info;
 
 	pass_info.pass = new find_uninitialised_pass(g);
-	pass_info.reference_pass_name = "cfg";
+	pass_info.reference_pass_name = "lower";
 	pass_info.ref_pass_instance_number = 1;
-	pass_info.pos_op = PASS_POS_INSERT_AFTER;
+	pass_info.pos_op = PASS_POS_INSERT_BEFORE;
 
 	register_callback(plugin_info->base_name, PLUGIN_PASS_MANAGER_SETUP, NULL, &pass_info);
-	//register_callback(plugin_info->base_name, PLUGIN_FINISH, finish_gcc, NULL);
-	
+
 	return 0;
 }
