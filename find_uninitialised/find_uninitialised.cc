@@ -102,6 +102,18 @@ namespace{
 			return nullptr;
 		}
 
+		static tree assign_callback_stmt(gimple_stmt_iterator *gsi, 
+						bool *handled_all_ops, 
+						struct walk_stmt_info *wi){
+			*handled_all_ops = true;
+			
+			find_uninitialised_pass *this_ = reinterpret_cast<find_uninitialised_pass *>(wi->info);
+
+			this_->add_assign_stmt(gsi);
+
+			return nullptr;
+		}
+
 		void traverse_stmt(gimple_seq gseq){
 			struct walk_stmt_info wi;
 			memset(&wi, 0, sizeof(wi));
@@ -110,6 +122,17 @@ namespace{
 
 			walk_gimple_seq(gseq, vars_callback_stmt, nullptr, &wi);
 		}
+
+		void assign_vars_traversal(gimple_seq gseq){
+			struct walk_stmt_info wi;
+			memset(&wi, 0, sizeof(wi));
+
+			wi.info = this;
+
+			walk_gimple_seq(gseq, assign_callback_stmt, nullptr, &wi);
+		}
+
+		
 
 		tree do_traverse_stmt(gimple_stmt_iterator *gsi){
 			
@@ -141,6 +164,33 @@ namespace{
 			return nullptr;
 		}
 
+		tree add_assign_stmt(gimple_stmt_iterator *gsi){
+			gimple stmt = gsi_stmt(*gsi);
+
+			switch(gimple_code(stmt)){
+				case GIMPLE_BIND:
+					{
+						gbind *gb_stmt = as_a <gbind *> (stmt);
+						gimple_seq bind_body = gimple_bind_body(gb_stmt);
+						for (tree var = gimple_bind_vars(gb_stmt); var != NULL; 
+							var = DECL_CHAIN(var)){
+							bool is_in = uninitialised_vars.find(var) != uninitialised_vars.end();
+							if ( is_in ){
+								tree type = integer_type_node;
+								tree rhs = build_zero_cst (type);
+								gimple g = gimple_build_assign(var, rhs);
+								gimple_seq_set_first(&bind_body, g);
+							}
+						}
+						assign_vars_traversal(bind_body);
+						break;
+					}
+				default:
+					break;
+			}
+			return nullptr;
+		}
+
 		void gather_uninitialised_vars(function *fun){
 			uninitialised_vars.clear();
 
@@ -152,7 +202,8 @@ namespace{
 			for (tree t: uninitialised_vars){
 				std::cerr << "Variables '" << IDENTIFIER_POINTER(DECL_NAME(t)) << "' looks uninitialised \n";
 			}
-			std::cerr << "\n";
+			std::cerr << "\n\n Assigning Variables\n";
+			assign_vars_traversal(gseq);
 		}
 	};
 }

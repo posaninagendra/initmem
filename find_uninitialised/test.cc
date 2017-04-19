@@ -9,11 +9,16 @@ int main(){
 	int d;
 	int e;
 	int k = foo();
+
+	cout << "b = " << b << "\n"; 
+	cout << "d = " << d << "\n";
+	cout << "e = " << e << "\n";
 	return 0;
 }
 
 int foo(){
 	int x = 0;
 	int y;
+	cout << "y = " << y << "\n";
 	return x;
 }

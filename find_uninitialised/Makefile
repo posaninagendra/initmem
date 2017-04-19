@@ -17,7 +17,7 @@ clean:
 	rm -f find_uninitialised.o find_uninitialised.so
 
 check: find_uninitialised.so test.cc
-	$(CXX) -c -fplugin=./find_uninitialised.so -c test.cc 
+	$(CXX) -fplugin=./find_uninitialised.so  test.cc 
 	
 	
 .PHONY: all clean check
