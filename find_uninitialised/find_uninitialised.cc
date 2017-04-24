@@ -172,17 +172,23 @@ namespace{
 					{
 						gbind *gb_stmt = as_a <gbind *> (stmt);
 						gimple_seq bind_body = gimple_bind_body(gb_stmt);
+						assign_vars_traversal(bind_body); // Handle inner GIMPLE_BIND first
+
+						gimple_seq initialised_vars = NULL;
+						
 						for (tree var = gimple_bind_vars(gb_stmt); var != NULL; 
 							var = DECL_CHAIN(var)){
 							bool is_in = uninitialised_vars.find(var) != uninitialised_vars.end();
 							if ( is_in ){
+								std::cerr << "Initializing --> " << IDENTIFIER_POINTER(DECL_NAME(var)) << "\n";
 								tree type = integer_type_node;
 								tree rhs = build_zero_cst (type);
 								gimple g = gimple_build_assign(var, rhs);
-								gimple_seq_set_first(&bind_body, g);
+								gimple_seq_add_stmt(&initialised_vars, g);
 							}
 						}
-						assign_vars_traversal(bind_body);
+						gimple_seq_add_seq(&initialised_vars, bind_body);
+						gimple_bind_set_body(gb_stmt, initialised_vars);
 						break;
 					}
 				default:
