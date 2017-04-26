@@ -12,7 +12,7 @@ The plugin interface of GCC follows a model similar to that of Linux modules: AP
 
 1. Download GCC 5.2
 
-```
+```shell
 # define a variable BASEDIR that we will use all the time
 $ export BASEDIR=$HOME/gcc-plugins
 # Create the directory, if it does not exist
@@ -36,7 +36,7 @@ $ ./contrib/download_prerequisites
 
 3. Configure and build the compiler
 
-```
+```shell
 # We are in gcc-5.2.0, go up one level
 $ cd ..
 # Now create the build directory, gcc-build is a sensible name
@@ -55,13 +55,13 @@ $ make -j$(getconf _NPROCESSORS_ONLN)
 
 4. Install
 
-```
+```shell
 make install
 ```
 
 5. Check installation
 
-```
+```shell
 # Create a convenience variable for the path of GCC
 $ export GCCDIR=$INSTALLDIR/bin
 $ $GCCDIR/g++ --version
