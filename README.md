@@ -22,7 +22,7 @@ $ wget http://ftp.gnu.org/gnu/gcc/gcc-5.2.0/gcc-5.2.0.tar.bz2
 # Unpack the file
 $ tar xfj gcc-5.2.0.tar.bz2
 ```
-2. The next step involves building GCC. First we need to get some software required by GCC itself. 
+2. The next step is to get some software required by GCC itself. 
 ```
 # Enter in the source code directory of GCC
 $ cd gcc-5.2.0
