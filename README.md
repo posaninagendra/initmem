@@ -9,7 +9,9 @@ Compilers main function is to down convert the high language to lower level mach
 GCC is old compiler, it first released in 1987 (source: [Wikipedia](https://en.wikipedia.org/wiki/GNU_Compiler_Collection)). It has evolved over the years to gain new features. One of these functionalities is being extensible via plugins. Plugins let us to extend the compiler without getting ourselves too dirty. GCC codebase, after 30 years, is huge and comes with its own quirks, so writing a plugin is not trivial but, in my opinion, can be very rewarding and revealing on how a real compiler works (for good and bad, of course). 
 
 The plugin interface of GCC follows a model similar to that of Linux modules: API stability is not guaranteed between versions. So for this plugin we are using GCC 5.2, to install the plugin we need to setup GCC 5.2, here are the steps that guide you to install GCC 5.2. I used the installation guidelines provided by Roger in one of his articles on [How to write GCC plugins](http://thinkingeek.com/2015/08/16/a-simple-plugin-for-gcc-part-1/). 
+
 1. Download GCC 5.2
+
 ```
 # define a variable BASEDIR that we will use all the time
 $ export BASEDIR=$HOME/gcc-plugins
@@ -22,14 +24,18 @@ $ wget http://ftp.gnu.org/gnu/gcc/gcc-5.2.0/gcc-5.2.0.tar.bz2
 # Unpack the file
 $ tar xfj gcc-5.2.0.tar.bz2
 ```
+
 2. The next step is to get some software required by GCC itself. 
-```
+
+```shell
 # Enter in the source code directory of GCC
 $ cd gcc-5.2.0
 # And now download the prerequisites
 $ ./contrib/download_prerequisites
 ```
+
 3. Configure and build the compiler
+
 ```
 # We are in gcc-5.2.0, go up one level
 $ cd ..
@@ -46,11 +52,15 @@ $ ../gcc-5.2.0/configure --prefix=$INSTALLDIR --enable-languages=c,c++
 # we can use, in order to build GCC in parallel
 $ make -j$(getconf _NPROCESSORS_ONLN)
 ```
+
 4. Install
+
 ```
 make install
 ```
+
 5. Check installation
+
 ```
 # Create a convenience variable for the path of GCC
 $ export GCCDIR=$INSTALLDIR/bin
