@@ -1,4 +1,4 @@
-# initmem <sub><sup> *: A GCC plugin to find & initialize the uninitialized* </sup></sub>
+# initmem <sub><sup> : A GCC plugin to find & initialize the uninitialized </sup></sub>
 
 Compilers main function is to down convert the high level language to lower level machine codes and create the executable. GCC (GNU Compiler Collection) is one of the most popular compilers. These compilers not only do the down conversion but they also does a lot of omptimizations that speeds up the execution of the programs. Often, these compilers fail to address all the programming needs, in order to overcome these problems they provide extensions through compiler plugins. GCC falls in this class of compilers that provides extensions through its plugin interface.
 
