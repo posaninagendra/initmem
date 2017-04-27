@@ -10,7 +10,7 @@ GCC is an old compiler, it first released in 1987 (source: [Wikipedia](https://e
 
 The plugin interface of GCC follows a model similar to that of Linux modules: API stability is not guaranteed between versions. So for this plugin we are using GCC 5.2, to install the plugin we need to setup GCC 5.2, here are the steps that guide you to install GCC 5.2. I used the installation guidelines provided by Roger in one of his articles on [How to write GCC plugins](http://thinkingeek.com/2015/08/16/a-simple-plugin-for-gcc-part-1/). 
 
-1. Download GCC 5.2
+* Download GCC 5.2
 
 ```shell
 # define a variable BASEDIR that we will use all the time
@@ -25,7 +25,7 @@ $ wget http://ftp.gnu.org/gnu/gcc/gcc-5.2.0/gcc-5.2.0.tar.bz2
 $ tar xfj gcc-5.2.0.tar.bz2
 ```
 
-2. The next step is to get some software required by GCC itself. 
+* The next step is to get some software required by GCC itself. 
 
 ```shell
 # Enter in the source code directory of GCC
@@ -34,7 +34,7 @@ $ cd gcc-5.2.0
 $ ./contrib/download_prerequisites
 ```
 
-3. Configure and build the compiler
+* Configure and build the compiler
 
 ```shell
 # We are in gcc-5.2.0, go up one level
@@ -53,13 +53,13 @@ $ ../gcc-5.2.0/configure --prefix=$INSTALLDIR --enable-languages=c,c++
 $ make -j$(getconf _NPROCESSORS_ONLN)
 ```
 
-4. Install
+* Install
 
 ```shell
 make install
 ```
 
-5. Check installation
+* Check installation
 
 ```shell
 # Create a convenience variable for the path of GCC
