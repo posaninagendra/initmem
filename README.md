@@ -1,8 +1,8 @@
-# Find & Initialize *the* Uninitialized
+# *initmem*: A GCC plugin to find & initialize the uninitialized
 
 Compilers main function is to down convert the high level language to lower level machine codes and create the executable. GCC (GNU Compiler Collection) is one of the most popular compilers. These compilers not only do the down conversion but they also does a lot of omptimizations that speeds up the execution of the programs. Often, these compilers fail to address all the programming needs, in order to overcome these problems they provide extensions through compiler plugins. GCC falls in this class of compilers that provides extensions through its plugin interface.
 
-*Find & initialize the uninitialized* is a GCC compiler plugin, as the name suggests, it finds the uninitialized variables and initializes them to zero. It solves the problem of data leaks through memory reads of uninitialized variables. 
+*initmem* is a GCC compiler plugin that finds the uninitialized variables in a given program and initializes them to zero at compilation time. It solves the problem of data leaks through memory reads of uninitialized variables. 
 
 ### Installation
 
