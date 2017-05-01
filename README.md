@@ -91,7 +91,7 @@ $ make fcheck
 
 ### People
 * [Nagendra Posani](https://posaninagendra.github.io/)
-Mentors:
-* [Kangjie Lu](http://www.cc.gatech.edu/~klu38/)
-* [Roger Ferrer](https://rofi.roger-ferrer.org/)
-* [Prof. Taesoo Kim](https://taesoo.gtisc.gatech.edu/)
+- Mentors:
+  * [Kangjie Lu](http://www.cc.gatech.edu/~klu38/)
+  * [Roger Ferrer](https://rofi.roger-ferrer.org/)
+  * [Prof. Taesoo Kim](https://taesoo.gtisc.gatech.edu/)
