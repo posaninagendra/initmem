@@ -70,3 +70,28 @@ Copyright (C) 2015 Free Software Foundation, Inc.
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ```
+### Running the plugin
+
+* After the installation of gcc-5.2, download the source of the plugin and modify the Makefile to add the paths of gcc-5.2 and testfile. 
+```shell
+# Download initmem source
+$ git clone https://github.com/posaninagendra/initmem.git
+# Edit paths of gcc-5.2 and TESTFILE
+```
+* Run the plugin
+```shell
+# Clean the source
+$ make clean
+# Run the plugin
+$ make check
+# Run with -fdump-tree-all flag to see the plugin pass 
+$ make fcheck
+# Refer to the file file_name.LANGUAGE.nnn.initmem-pass
+```
+
+### People
+* [Nagendra Posani](https://posaninagendra.github.io/)
+Mentors:
+* [Kangjie Lu](http://www.cc.gatech.edu/~klu38/)
+* [Roger Ferrer](https://rofi.roger-ferrer.org/)
+* [Prof. Taesoo Kim](https://taesoo.gtisc.gatech.edu/)
