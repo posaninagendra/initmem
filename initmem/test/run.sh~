@@ -1,0 +1,37 @@
+./assn_3 --basic ./basic/sm/input.1000.bin ./basic/sm/sorted_basic.bin > 1.txt
+diff ./basic/sm/sorted_basic.bin ./basic/sm/sort.bin
+echo "Basic Small Done "
+
+./assn_3 --basic ./basic/med/input.30000.bin ./basic/med/sorted_basic.bin > 1.txt
+diff ./basic/med/sorted_basic.bin ./basic/med/sort.bin
+echo "Basic Medium Done "
+
+./assn_3 --basic ./basic/lg/input.99000.bin ./basic/lg/sorted_basic.bin > 1.txt
+diff ./basic/lg/sorted_basic.bin ./basic/lg/sort.bin
+echo "Basic Long Done "
+
+./assn_3 --multistep ./multistep/sm/input.1000.bin ./multistep/sm/sorted_basic.bin > 1.txt
+diff ./multistep/sm/sorted_basic.bin ./multistep/sm/sort.bin
+echo "Multistep Small Done "
+
+./assn_3 --multistep ./multistep/med/input.30000.bin ./multistep/med/sorted_basic.bin > 1.txt
+diff ./multistep/med/sorted_basic.bin ./multistep/med/sort.bin
+echo "Multistep Medium Done "
+
+./assn_3 --multistep ./multistep/lg/input.99000.bin ./multistep/lg/sorted_basic.bin > 1.txt
+diff ./multistep/lg/sorted_basic.bin ./multistep/lg/sort.bin
+echo "Multistep Long Done "
+
+./assn_3 --replacement ./replacement/sm/input.1000.bin ./replacement/sm/sorted_basic.bin > 1.txt
+diff ./replacement/sm/sorted_basic.bin ./replacement/sm/sort.bin
+echo "Replacement Small Done "
+
+./assn_3 --replacement ./replacement/med/input.30000.bin ./replacement/med/sorted_basic.bin > 1.txt
+diff ./replacement/med/sorted_basic.bin ./replacement/med/sort.bin
+echo "Replacement Medium Done "
+
+./assn_3 --replacement ./replacement/lg/input.99000.bin ./replacement/lg/sorted_basic.bin > 1.txt
+diff ./replacement/lg/sorted_basic.bin ./replacement/lg/sort.bin
+echo "Replacement Long Done "
+
+
